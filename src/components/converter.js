@@ -1,8 +1,6 @@
 import React, { Component, useState, useEffect } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import axios from 'axios';
-
-const url = 'https://api.currencyapi.com/v3/latest?apikey=wYwrXRFZtcagEGSRK1OWxop4Nkm5FF5pZTq6XB1v'
 
 class Converter extends Component {
   constructor(props) {
@@ -21,16 +19,18 @@ class Converter extends Component {
   }
 
   getRates() {
-    axios.get(url)
+    console.log("getratesin içi");
+    axios.get('https://api.currencyapi.com/v3/latest?apikey=nO1h6nKMid9JyP6VzFGIS8TOdxaQxnj4bvKTczOJ')
       .then(response => {
-        const datas = response.data;
+        console.log(response);
+        const datas = response.data.data;
         this.setState({
           datas: datas,
-          ytl: datas.data.TRY.value,
-          usd: datas.data.USD.value,        
-          cad: datas.data.CAD.value,        
-          jpy: datas.data.JPY.value,        
-          eur: datas.data.EUR.value       
+          ytl: datas.TRY.value,
+          usd: datas.USD.value,        
+          cad: datas.CAD.value,        
+          jpy: datas.JPY.value,        
+          eur: datas.EUR.value       
         })
       })
   }
@@ -47,11 +47,11 @@ class Converter extends Component {
     return(
       <View style={converterWrapper}>
         <TextInput 
-          placeholder="Enter EUR Value"
+          placeholder="Enter USD Value"
           style={inputStyle}
           keyboardType="numeric"
           onChangeText={(text) => {
-            const i = parseFloat(text);
+            const i = parseFloat(text) || 0;
             this.setState({
               input: text,
               ytl: (i * ytl ).toFixed(3),
@@ -68,6 +68,8 @@ class Converter extends Component {
         <Text style={textStyle}>CAD : {cad} </Text>
         <Text style={textStyle}>JPY : {jpy} </Text>
         <Text style={textStyle}>EUR : {eur} </Text>
+        
+        <TouchableOpacity onPress={() => this.getRates()}><Text>Hesapla</Text></TouchableOpacity>
       </View>
     )
   }
